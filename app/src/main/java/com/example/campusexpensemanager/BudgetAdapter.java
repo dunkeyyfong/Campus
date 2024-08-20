@@ -34,6 +34,8 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.viewholder
         this.budgetFragment = budgetFragment;
     }
 
+
+
     @NonNull
     @Override
     public viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -27,11 +27,18 @@
             android:exported="false" />
 
         <activity
+            android:name=".PieChart"
+            android:exported="true" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity android:name=".EditProfileActivity"/>
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".PieChart"/>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

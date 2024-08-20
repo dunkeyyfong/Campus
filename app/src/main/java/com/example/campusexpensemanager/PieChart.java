@@ -80,9 +80,10 @@ public class PieChart extends AppCompatActivity {
         colors.add(Color.YELLOW);
         colors.add(Color.RED);
         colors.add(Color.GREEN);
+        colors.add(Color.GRAY);
 
         for (String type : xData) {
-            pieData.add(new SliceValue(Float.parseFloat(map.get(type)), colors.get(i % 5)).setLabel(type));
+            pieData.add(new SliceValue(Float.parseFloat(map.get(type)), colors.get(i % 6)).setLabel(type));
             i++;
         }
     }

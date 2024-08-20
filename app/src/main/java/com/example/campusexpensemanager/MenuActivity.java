@@ -37,6 +37,7 @@ import com.example.campusexpensemanager.DataBase.ExpensesData;
 import com.example.campusexpensemanager.Model.Expenses;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.Serializable;
@@ -66,7 +67,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private EditText et_incomeAmount, et_incomeType, et_incomeNote;
     private List<Expenses> expenseList = new ArrayList<>();
     public DatabaseHandler1 databaseHandler1;
-
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,29 +102,31 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         bottomNavigationView.setBackground(null);
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
+       bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+           @Override
+           public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+               int itemId = menuItem.getItemId();
+               if (itemId == R.id.Home) {
+                   openFragment(new HomeFragment());
+                   return true;
+               } else if (itemId == R.id.Expense) {
+                   openFragment(new ExpenseFragment());
+                   return true;
 
-            if(item.getItemId() == R.id.Home){
-                setFragment(new HomeFragment());
-            }
-            else  if(item.getItemId() == R.id.Expense){
-                setFragment(new ExpenseFragment());
-            }
-            else  if(item.getItemId() == R.id.Budget){
-                setFragment(new BudgetFragment());
-            }
-            else  if(item.getItemId() == R.id.Profile){
-                // Chuyển đến MainActivity và truyền thông tin người dùng
-               Intent mainIntent = new Intent(MenuActivity.this, MainActivity.class);
-//
-               startActivity(mainIntent);
+               } else if (itemId == R.id.Budget) {
+                   openFragment(new BudgetFragment());
+                   return true;
+               } else if (itemId == R.id.Profile) {
+                   Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                   startActivity(intent);
+                   return true;
+               }
+               return false;
+           }
 
-
-            }
-
-            return true;
-        });
-
+       });
+        fragmentManager = getSupportFragmentManager();
+        openFragment(new HomeFragment());
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -135,7 +138,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     private  void setFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -187,53 +197,30 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void displaySelectedListener(int itemId){
-        Fragment fragment = null;
-
-            if( itemId ==  android.R.id.home) {
-
-                DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-                drawerLayout.openDrawer(GravityCompat.START);
-                return;
-            }
-            if (itemId == R.id.Home){
-                bottomNavigationView.setSelectedItemId(R.id.Home);
-                fragment=new HomeFragment();
-
-            }
-
-            if (itemId == R.id.Expense) {
-                bottomNavigationView.setSelectedItemId(R.id.Expense);
-                fragment=new ExpenseFragment();
-
-            }
-             if (itemId == R.id.Budget) {
-                 bottomNavigationView.setSelectedItemId(R.id.Budget);
-                 fragment = new BudgetFragment();
-             }
-
-            if (itemId == R.id.Profile) {
-                fragment = new ProfileFragment();
-            }
-
-        if(fragment!=null){
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frame_layout, fragment);
-            ft.commit();
-        }
-
-        DrawerLayout drawerLayout=findViewById(R.id.drawer_layout);
-        drawerLayout.closeDrawer(GravityCompat.START);
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.i("ITEM ID", Integer.toString(item.getItemId()));
-        displaySelectedListener(item.getItemId());
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_Home) {
+            openFragment(new HomeFragment());
+        } else if (itemId == R.id.nav_Expense) {
+            openFragment(new ExpenseFragment());
+        } else if (itemId == R.id.nav_Budget) {
+            openFragment(new BudgetFragment());
+        } else if (itemId == R.id.nav_Profile) {
+            startActivity(new Intent(MenuActivity.this, MainActivity.class));
+        } else if (itemId == R.id.nav_logout) {
+            startActivity(new Intent(MenuActivity.this, LoginActivity.class));
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
 
+    private void openFragment(Fragment fragment){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.frame_layout, fragment);
+        transaction.commit();
+    }
 
     private void showExpenseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

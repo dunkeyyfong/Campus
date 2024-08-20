@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.campusexpensemanager.Adapter.budgetAdapter2;
 import com.example.campusexpensemanager.Adapter.expenseAdapter;
 import com.example.campusexpensemanager.DataBase.ExpensesData;
 import com.example.campusexpensemanager.Model.Expenses;
@@ -34,7 +35,7 @@ public class HomeFragment extends Fragment {
     private TextView tv_income, tv_expense;
 
     private expenseAdapter expenseAdapter;
-    private BudgetAdapter budgetAdapter;
+    private budgetAdapter2 budgetAdapter2;
 
     private List<Expenses> expensesList = new ArrayList<>();
     private ExpensesData expensesData;
@@ -75,7 +76,7 @@ public class HomeFragment extends Fragment {
         databaseHandler1 = new DatabaseHandler1(getContext());
 
         fillExpenseModel();
-        //fillIncomeModel();
+        fillIncomeModel();
 
         return view;
     }
@@ -102,18 +103,21 @@ public class HomeFragment extends Fragment {
         rv_expense.setAdapter(expenseAdapter);
     }
 
-//    private void fillIncomeModel() {
-//        incomeModelList = databaseHandler1.getAllIncome();
-//        long total1 = 0;
-//        for (incomeModel model : incomeModelList) {
-//            total1 += Long.parseLong(model.getAmount());
-//        }
-//        totalIncome = String.valueOf(total1);
-//        tv_income.setText("$" + totalIncome);
-//
-//        budgetAdapter = new BudgetAdapter(getContext(), incomeModelList,databaseHandler1,bu);
-//        rv_income.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rv_income.setHasFixedSize(true);
-//        rv_income.setAdapter(budgetAdapter);
-//    }
+    private void fillIncomeModel() {
+        incomeModelList = databaseHandler1.getAllIncome();
+
+        int total = 0;
+        for (incomeModel model : incomeModelList) {
+            total += Integer.parseInt(model.getAmount());
+        }
+        totalIncome = String.valueOf(total);
+        tv_income.setText("₹" + totalIncome);
+
+        budgetAdapter2 = new budgetAdapter2(getContext(), incomeModelList);
+        rv_income.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rv_income.setHasFixedSize(true);
+
+        rv_income.setAdapter(budgetAdapter2);
+
+    }
 }
